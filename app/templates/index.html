@@ -1,0 +1,380 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SmartChat | Chat with your documents</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}" rel="stylesheet">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <div class="brand-mark"><i class="bi bi-stars"></i></div>
+        <div><div class="brand-name">SmartChat</div><div class="brand-subtitle">Chat with your documents</div></div>
+        <button class="btn sidebar-close d-lg-none" id="sidebarClose" aria-label="Close menu"><i class="bi bi-x-lg"></i></button>
+      </div>
+
+      <div class="sidebar-label">WORKSPACE</div>
+      <nav class="nav flex-column sidebar-nav">
+        <a class="nav-link active" href="#" data-view="home"><i class="bi bi-house-door"></i><span>Home</span></a>
+        <a class="nav-link" href="#" data-view="upload"><i class="bi bi-cloud-arrow-up"></i><span>Upload Document</span></a>
+        <a class="nav-link" href="#" data-view="documents"><i class="bi bi-files"></i><span>View Documents</span></a>
+        <!-- <a class="nav-link" href="#" data-view="delete"><i class="bi bi-trash3"></i><span>Delete Document</span></a> -->
+      </nav>
+
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-label">ADMINISTRATION</div>
+      <nav class="nav flex-column sidebar-nav">
+        <a class="nav-link" href="#" data-view="admin"><i class="bi bi-shield-check"></i><span>Admin Section</span></a>
+        <a class="nav-link" href="#" data-view="users"><i class="bi bi-people"></i><span>Manage Users</span></a>
+        <a class="nav-link" href="#" data-view="settings"><i class="bi bi-gear"></i><span>System Settings</span></a>
+        <a class="nav-link" href="#" data-view="logs"><i class="bi bi-list-check"></i><span>View Logs</span></a>
+      </nav>
+
+      <div class="sidebar-quote">
+        <i class="bi bi-quote"></i>
+        <p>Smarter search.<br>Faster answers.<br>Your documents,<br>just a chat away.</p>
+        <i class="bi bi-flower1 quote-flower"></i>
+      </div>
+      <div class="sidebar-footer"><span class="status-dot"></span> AI workspace ready</div>
+    </aside>
+
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+    <main class="main-area">
+      <header class="topbar">
+        <button class="btn menu-toggle" id="menuToggle" aria-label="Open menu"><i class="bi bi-list"></i></button>
+        <div class="topbar-context"><span class="context-dot"></span> Your knowledge workspace</div>
+        <div class="dropdown">
+          <button class="profile-button dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+            <span class="profile-avatar"><i class="bi bi-person-fill"></i></span>
+            <span class="d-none d-sm-inline">Admin</span>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+            <li><a class="dropdown-item" href="#" data-view="settings"><i class="bi bi-gear me-2"></i>Settings</a></li>
+            <li><a class="dropdown-item" href="#" data-view="admin"><i class="bi bi-shield-check me-2"></i>Admin section</a></li>
+          </ul>
+        </div>
+      </header>
+    
+      <!-- for the successull message display -->
+ <div id="uploadResult" class="upload-success-card mt-3 d-none">
+
+    <h5>
+        <i class="bi bi-check-circle-fill me-2"></i>
+        Document Uploaded Successfully!
+    </h5>
+
+    <div class="upload-detail">
+        <span class="upload-label">
+            Filename: <strong id="uploadedFilename"></strong>
+        </span>
+    </div>
+
+    <div class="upload-detail">
+        <span class="upload-label">
+            Document ID: <strong id="uploadedFileId"></strong>
+        </span>
+    </div>
+
+</div>
+
+      <div class="page-content">
+        <div class="page-heading">
+          <div><p class="eyebrow">WELCOME BACK</p><h1>Your knowledge, <span>in conversation.</span></h1><p class="heading-subtitle">Upload files, ask questions, and discover answers from your documents.</p></div>
+          <div class="date-chip"><i class="bi bi-calendar3"></i><span id="todayDate">Today</span></div>
+        </div>
+
+        <div class="dashboard-grid">
+          <section class="primary-column">
+            <section class="welcome-card">
+              <div class="welcome-orb"><i class="bi bi-robot"></i></div>
+              <p class="eyebrow">YOUR AI DOCUMENT ASSISTANT</p>
+              <h2>Welcome to <span>SmartChat</span></h2>
+              <p class="welcome-copy">Ask a question. Find the answer. Let your documents do the talking.</p>
+              <div class="quick-actions">
+                <button class="quick-action" data-view="upload"><span class="action-icon gold"><i class="bi bi-cloud-arrow-up"></i></span><strong>Upload Document</strong><small>Add files to your workspace</small></button>
+                <button class="quick-action" data-view="documents"><span class="action-icon amber"><i class="bi bi-file-earmark-text"></i></span><strong>View Documents</strong><small>Browse your uploaded files</small></button>
+                <!-- <button class="quick-action" data-view="delete"><span class="action-icon coral"><i class="bi bi-trash3"></i></span><strong>Delete Document</strong><small>Remove files you no longer need</small></button> -->
+                <button class="quick-action" data-view="admin"><span class="action-icon brown"><i class="bi bi-shield-lock"></i></span><strong>Admin Section</strong><small>Manage workspace settings</small></button>
+              </div>
+            </section>
+
+            <section class="chat-card" id="chatSection">
+              <div class="section-title chat-title">
+                <div class="assistant-avatar"><i class="bi bi-robot"></i></div>
+                <div><h3>Chat with your documents</h3><p>Answers grounded in your uploaded knowledge</p></div>
+                <button class="btn btn-sm btn-outline-gold ms-auto" id="clearChat"><i class="bi bi-arrow-clockwise me-1"></i>New chat</button>
+              </div>
+              <div class="chat-messages" id="chatMessages" aria-live="polite">
+                <div class="message-row assistant-row">
+                  <div class="message-avatar"><i class="bi bi-stars"></i></div>
+                  <div class="message-bubble assistant-bubble"><p>Hello! I'm your SmartChat assistant.</p><p>Ask me a question about your uploaded documents, and I'll help you find the information.</p><span class="message-time">Ready when you are</span></div>
+                </div>
+              </div>
+
+              {% if question %}
+        <div class="user-question">
+        <strong>Your question:</strong>
+        <p>{{ question }}</p> </div>
+      {% endif %}
+
+        {% if result %}
+    <div class="ai-response">
+        <strong>SmartChat response:</strong>
+        <p>{{ result }}</p>
+        </div>
+            {% endif %}
+           
+        <form action="/chat" method="post" class="chat-composer">
+    <label class="visually-hidden" for="questionInput"> Your question
+    </label>
+
+    <textarea id="questionInput" name="question" rows="1" placeholder="Ask a question about your documents..."
+        required
+    ></textarea>
+
+    <div class="composer-bottom">
+        <span class="composer-hint"> <i class="bi bi-shield-check me-1"></i>
+            Answers from your knowledge base
+        </span>
+
+        <button class="btn send-button" type="submit">
+            <span>Send</span>  <i class="bi bi-send-fill"></i>
+        </button> </div>
+</form>
+            <p class="chat-disclaimer">AI responses can be inaccurate. Verify important details in the source documents.</p>
+            </section>
+
+            <section class="content-panel d-none" id="uploadPanel">
+              <div class="section-title"><div><h3>Upload documents</h3><p>Add files to your SmartChat knowledge base.</p></div><span class="panel-icon"><i class="bi bi-cloud-arrow-up"></i></span></div>
+        <!-- for the upload html section -->
+         <form id="uploadForm" action="/upload-doc" method="post"
+      enctype="multipart/form-data">
+
+    <label class="drop-zone" for="documentFiles" id="dropZone">
+        <span class="drop-icon">
+            <i class="bi bi-cloud-arrow-up"></i>
+        </span>
+
+        <strong>Drag file here or <span>browse file</span></strong>
+        <small>PDF, DOCX and HTML formats supported.</small>
+
+        <input
+            id="documentFiles"
+            name="file"
+            type="file"
+            accept=".pdf,.docx,.html"
+            required
+            hidden
+        >
+    </label>
+
+    <!-- Display selected filename -->
+    <div id="selectedFiles" class="selected-files mt-3">
+        No file selected.
+    </div>
+
+    <!-- Upload button -->
+    <div class="d-flex justify-content-end mt-3">
+        <button class="btn send-button" type="submit" id="uploadBtn">
+            <i class="bi bi-upload me-2"></i> Upload file
+        </button>
+    </div>
+</form>
+
+<!-- Upload success message -->
+<div id="uploadResult" class="upload-success-card mt-3 d-none">
+
+    <div class="upload-success-header">
+        <i class="bi bi-check-circle-fill me-2"></i>
+        <h5>Document Uploaded Successfully!</h5>
+    </div>
+
+    <div class="upload-detail">
+        <span class="upload-label">
+            <i class="bi bi-file-earmark-text me-2"></i>
+            Filename:
+            <strong id="uploadedFilename"></strong>
+        </span>
+    </div>
+
+    <div class="upload-detail">
+        <span class="upload-label">
+            <i class="bi bi-hash me-2"></i>
+            Document ID:
+            <strong id="uploadedFileId"></strong>
+        </span>
+    </div>
+</div>
+
+<!-- Upload error message -->
+<div id="uploadError" class="alert alert-danger mt-3 d-none"
+     role="alert"></div>
+
+
+  
+         
+            </section>
+
+            <section class="content-panel d-none" id="documentsPanel">
+              <div class="section-title"><div><h3>Your documents</h3><p>Browse the files available to your assistant.</p></div><button class="btn btn-outline-gold btn-sm" id="refreshDocuments"><i class="bi bi-arrow-clockwise me-1"></i>Refresh</button></div>
+              <div class="table-responsive"><table class="table document-table align-middle"><thead><tr><th>Document</th><th>Type</th><th>Added</th><th>Action</th></tr></thead><tbody id="documentTableBody"></tbody></table></div>
+              <div class="empty-state d-none" id="emptyDocuments"><i class="bi bi-folder2-open"></i><p>No documents yet. Upload a file to get started.</p></div>
+            </section>
+
+            <!-- <section class="content-panel d-none" id="deletePanel">
+              <div class="section-title"><div><h3>Delete documents</h3><p>Remove a document from this workspace.</p></div><span class="panel-icon danger"><i class="bi bi-trash3"></i></span></div>
+              <div class="alert alert-warning-subtle border-0 small"><i class="bi bi-exclamation-triangle me-2"></i>Deleting a document may also remove it from your searchable knowledge base.</div>
+              <div id="deleteDocumentList" class="delete-list"></div>
+            </section> -->
+
+            <section class="content-panel d-none" id="adminPanel">
+              <div class="section-title"><div><h3>Admin section</h3><p>Workspace overview and administration shortcuts.</p></div><span class="panel-icon"><i class="bi bi-shield-check"></i></span></div>
+              <div class="admin-grid">
+                <button class="admin-tile" data-view="users"><i class="bi bi-people"></i><strong>Manage users</strong><small>Review access and roles</small></button>
+                <button class="admin-tile" data-view="settings"><i class="bi bi-sliders"></i><strong>System settings</strong><small>Configure workspace</small></button>
+                <button class="admin-tile" data-view="logs"><i class="bi bi-list-check"></i><strong>Activity logs</strong><small>Review recent actions</small></button>
+              </div>
+              <div class="inline-note mt-4"><i class="bi bi-lock me-2"></i>Protect administrative actions with authentication and role-based permissions on the server.</div>
+            </section>
+
+            <section class="content-panel d-none" id="usersPanel">
+              <div class="section-title"><div><h3>Manage users</h3><p>Admin-only user management placeholder.</p></div></div>
+              <div class="empty-state"><i class="bi bi-people"></i><p>Connect this section to your user-management API.</p></div>
+            </section>
+            <section class="content-panel d-none" id="settingsPanel">
+              <div class="section-title"><div><h3>System settings</h3><p>Manage your SmartChat preferences.</p></div></div>
+              <div class="setting-row"><div><strong>Response model</strong><small>Choose the model configured on your backend.</small></div><span class="setting-value">Configured server-side</span></div>
+              <div class="setting-row"><div><strong>Document indexing</strong><small>Embeddings and retrieval settings.</small></div><span class="setting-value">Backend managed</span></div>
+            </section>
+            <section class="content-panel d-none" id="logsPanel">
+              <div class="section-title"><div><h3>Activity logs</h3><p>Recent activity in this browser session.</p></div></div>
+              <div id="activityLog" class="activity-log"><div class="log-entry">SmartChat workspace opened.</div></div>
+            </section>
+          </section>
+
+          <aside class="right-column">
+            <section class="side-card stats-card">
+              <div class="section-title compact"><span class="mini-title-icon"><i class="bi bi-bar-chart-fill"></i></span><h3>Quick stats</h3></div>
+              <div class="stats-grid">
+                <div class="stat-box"><span class="stat-icon"><i class="bi bi-file-earmark-text"></i></span><div><strong id="documentCount">4</strong><small>Total documents</small></div></div>
+                <div class="stat-box"><span class="stat-icon"><i class="bi bi-chat-square-text"></i></span><div><strong id="queryCount">0</strong><small>Total queries</small></div></div>
+                <div class="stat-box"><span class="stat-icon"><i class="bi bi-person-check"></i></span><div><strong>1</strong><small>Active user</small></div></div>
+                <div class="stat-box"><span class="stat-icon"><i class="bi bi-clock-history"></i></span><div><strong id="lastActivity">Today</strong><small>Last activity</small></div></div>
+              </div>
+            </section>
+
+            <section class="side-card recent-card">
+              <div class="section-title compact"><span class="mini-title-icon"><i class="bi bi-file-earmark-richtext"></i></span><h3>Recent documents</h3><button class="text-link ms-auto" data-view="documents">View all <i class="bi bi-arrow-right"></i></button></div>
+              <div id="recentDocuments" class="recent-list"></div>
+            </section>
+
+            <section class="side-card admin-tools-card">
+              <div class="section-title compact"><span class="mini-title-icon"><i class="bi bi-shield-fill-check"></i></span><h3>Admin tools</h3></div>
+              <button class="admin-link" data-view="users"><span><i class="bi bi-person-gear"></i>Manage users</span><i class="bi bi-chevron-right"></i></button>
+              <button class="admin-link" data-view="settings"><span><i class="bi bi-gear-fill"></i>System settings</span><i class="bi bi-chevron-right"></i></button>
+              <button class="admin-link" data-view="logs"><span><i class="bi bi-list-ul"></i>View logs</span><i class="bi bi-chevron-right"></i></button>
+            </section>
+
+            <section class="help-card"><span class="help-sparkle"><i class="bi bi-stars"></i></span><strong>Need a hand?</strong><p>Upload your files, then ask SmartChat anything about their contents.</p><button class="help-link" data-view="upload">Upload a document <i class="bi bi-arrow-up-right"></i></button></section>
+          </aside>
+        </div>
+        <footer class="page-footer"><span>© <span id="yearNow"></span> SmartChat</span><span>Built for clearer answers <i class="bi bi-heart-fill"></i></span></footer>
+      </div>
+    </main>
+  </div>
+
+  <div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="appToast" class="toast align-items-center border-0" role="status" aria-live="polite" aria-atomic="true">
+      <div class="d-flex"><div class="toast-body" id="toastMessage">Action complete.</div><button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button></div>
+    </div>
+  </div>
+
+
+  <!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1"
+     aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteConfirmModalLabel">
+                    <i class="bi bi-exclamation-triangle text-danger me-2"></i>
+                    Delete Document
+                </h5>
+                <button type="button" class="btn-close"
+                        data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                Are you sure you want to delete
+                <strong id="deleteDocumentName"></strong>?
+
+                <p class="text-muted small mt-2">
+                    This action may permanently remove the document
+                    from your knowledge base.
+                </p>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary"
+                        data-bs-dismiss="modal">
+                    Cancel
+                </button>
+
+                <button type="button" class="btn btn-danger"
+                        id="confirmDeleteBtn">
+                    <i class="bi bi-trash3 me-1"></i> Delete
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{% static 'js/script.js' %}"></script>
+
+  <script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const fileInput = document.getElementById("documentFiles");
+    const selectedFiles = document.getElementById("selectedFiles");
+
+    console.log("Upload JavaScript loaded.");
+
+    fileInput.addEventListener("change", function () {
+        console.log("File input changed:", this.files);
+
+        selectedFiles.innerHTML = "";
+
+        if (this.files.length === 0) {
+            selectedFiles.textContent = "No files selected.";
+            return;
+        }
+
+        Array.from(this.files).forEach(function (file) {
+            const item = document.createElement("div");
+            item.className = "selected-file-item";
+
+            const name = document.createElement("span");
+            name.textContent = "📄 " + file.name;
+
+            const size = document.createElement("small");
+            size.textContent = " (" + (file.size / 1024).toFixed(1) + " KB)";
+
+            item.appendChild(name);
+            item.appendChild(size);
+            selectedFiles.appendChild(item);
+        });
+    });
+});
+  </script>
+  
+</body>
+</html>
